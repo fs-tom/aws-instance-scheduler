@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09", 
-    "Description": "Instance scheduler, version 2.2.2.0", 
+    "Description": "Instance scheduler, derived from version 2.2.2.0, hacked for instance-scheduler-2.10.0.25 running on govcloud", 
     "Parameters": {
         "SchedulingActive": {
             "Type": "String", 
@@ -986,62 +986,7 @@
                 "Path": "/"
             }
         },
-// Auto scaling bones us on aws-govcloud instantiation.  no support yet!
-        // "SchedulerDynamoDBScalingRole": {
-        //     "Type": "AWS::IAM::Role", 
-        //     "Properties": {
-        //         "AssumeRolePolicyDocument": {
-        //             "Version": "2012-10-17", 
-        //             "Statement": [
-        //                 {
-        //                     "Effect": "Allow", 
-        //                     "Principal": {
-        //                         "Service": "application-autoscaling.amazonaws.com", 
-        //                         "AWS": {
-        //                             "Fn::GetAtt": [
-        //                                 "SchedulerRole", 
-        //                                 "Arn"
-        //                             ]
-        //                         }
-        //                     }, 
-        //                     "Action": "sts:AssumeRole"
-        //                 }
-        //             ]
-        //         }, 
-        //         "Policies": [
-        //             {
-        //                 "PolicyName": "OpsAutomatorScalingRolePolicy", 
-        //                 "PolicyDocument": {
-        //                     "Version": "2012-10-17", 
-        //                     "Statement": [
-        //                         {
-        //                             "Effect": "Allow", 
-        //                             "Action": [
-        //                                 "dynamodb:DescribeTable", 
-        //                                 "dynamodb:UpdateTable", 
-        //                                 "cloudwatch:PutMetricAlarm", 
-        //                                 "cloudwatch:DescribeAlarms", 
-        //                                 "cloudwatch:GetMetricStatistics", 
-        //                                 "cloudwatch:SetAlarmState", 
-        //                                 "cloudwatch:DeleteAlarms"
-        //                             ], 
-        //                             "Resource": "*"
-        //                         }
-        //                     ]
-        //                 }
-        //             }
-        //         ], 
-        //         "ManagedPolicyArns": [
-        //             "arn:aws-us-gov:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole", 
-        //             "arn:aws-us-gov:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        //         ], 
-        //         "Path": "/"
-        //     }, 
-        //     "DependsOn": [
-        //         "SchedulerRole"
-        //     ]
-        // }
-	, 
+    
         "StateTable": {
             "Type": "AWS::DynamoDB::Table", 
             "Properties": {
@@ -1083,141 +1028,7 @@
                 }
             }
         }, 
-        // "StateTableAutoScalingReadTarget": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalableTarget", 
-        //     "Properties": {
-        //         "MaxCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "StateTableMaxRead"
-        //             ]
-        //         }, 
-        //         "MinCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "StateTableMinRead"
-        //             ]
-        //         }, 
-        //         "ResourceId": {
-        //             "Fn::Join": [
-        //                 "/", 
-        //                 [
-        //                     "table", 
-        //                     {
-        //                         "Ref": "StateTable"
-        //                     }
-        //                 ]
-        //             ]
-        //         }, 
-        //         "RoleARN": {
-        //             "Fn::GetAtt": [
-        //                 "SchedulerDynamoDBScalingRole", 
-        //                 "Arn"
-        //             ]
-        //         }, 
-        //         "ScalableDimension": "dynamodb:table:ReadCapacityUnits", 
-        //         "ServiceNamespace": "dynamodb"
-        //     }
-        // }, 
-        // "StateTableAutoScalingReadPolicy": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalingPolicy", 
-        //     "Properties": {
-        //         "PolicyName": {
-        //             "Fn::Join": [
-        //                 "-", 
-        //                 [
-        //                     {
-        //                         "Ref": "AWS::StackName"
-        //                     }, 
-        //                     "StateTableAutoScalingReadPolicy"
-        //                 ]
-        //             ]
-        //         }, 
-        //         "PolicyType": "TargetTrackingScaling", 
-        //         "ScalingTargetId": {
-        //             "Ref": "StateTableAutoScalingReadTarget"
-        //         }, 
-        //         "TargetTrackingScalingPolicyConfiguration": {
-        //             "TargetValue": 75.0, 
-        //             "ScaleInCooldown": 60, 
-        //             "ScaleOutCooldown": 60, 
-        //             "PredefinedMetricSpecification": {
-        //                 "PredefinedMetricType": "DynamoDBReadCapacityUtilization"
-        //             }
-        //         }
-        //     }
-        // }, 
-        // "StateTableAutoScalingWriteTarget": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalableTarget", 
-        //     "Properties": {
-        //         "MaxCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "StateTableMaxWrite"
-        //             ]
-        //         }, 
-        //         "MinCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "StateTableMinWrite"
-        //             ]
-        //         }, 
-        //         "ResourceId": {
-        //             "Fn::Join": [
-        //                 "/", 
-        //                 [
-        //                     "table", 
-        //                     {
-        //                         "Ref": "StateTable"
-        //                     }
-        //                 ]
-        //             ]
-        //         }, 
-        //         "RoleARN": {
-        //             "Fn::GetAtt": [
-        //                 "SchedulerDynamoDBScalingRole", 
-        //                 "Arn"
-        //             ]
-        //         }, 
-        //         "ScalableDimension": "dynamodb:table:WriteCapacityUnits", 
-        //         "ServiceNamespace": "dynamodb"
-        //     }
-        // }, 
-        // "StateTableAutoScalingWritePolicy": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalingPolicy", 
-        //     "Properties": {
-        //         "PolicyName": {
-        //             "Fn::Join": [
-        //                 "-", 
-        //                 [
-        //                     {
-        //                         "Ref": "AWS::StackName"
-        //                     }, 
-        //                     "StateTableAutoScalingWritePolicy"
-        //                 ]
-        //             ]
-        //         }, 
-        //         "PolicyType": "TargetTrackingScaling", 
-        //         "ScalingTargetId": {
-        //             "Ref": "StateTableAutoScalingWriteTarget"
-        //         }, 
-        //         "TargetTrackingScalingPolicyConfiguration": {
-        //             "TargetValue": 75.0, 
-        //             "ScaleInCooldown": 60, 
-        //             "ScaleOutCooldown": 60, 
-        //             "PredefinedMetricSpecification": {
-        //                 "PredefinedMetricType": "DynamoDBWriteCapacityUtilization"
-        //             }
-        //         }
-        //     }, 
-        //     "DependsOn": [
-        //         "StateTableAutoScalingReadPolicy"
-        //     ]
-        // }, 
+       
         "ConfigTable": {
             "Type": "AWS::DynamoDB::Table", 
             "Properties": {
@@ -1247,143 +1058,6 @@
                 }
             }
         }, 
-        // "ConfigTableAutoScalingReadTarget": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalableTarget", 
-        //     "Properties": {
-        //         "MaxCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "ConfigTableMaxRead"
-        //             ]
-        //         }, 
-        //         "MinCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "ConfigTableMinRead"
-        //             ]
-        //         }, 
-        //         "ResourceId": {
-        //             "Fn::Join": [
-        //                 "/", 
-        //                 [
-        //                     "table", 
-        //                     {
-        //                         "Ref": "ConfigTable"
-        //                     }
-        //                 ]
-        //             ]
-        //         }, 
-        //         "RoleARN": {
-        //             "Fn::GetAtt": [
-        //                 "SchedulerDynamoDBScalingRole", 
-        //                 "Arn"
-        //             ]
-        //         }, 
-        //         "ScalableDimension": "dynamodb:table:ReadCapacityUnits", 
-        //         "ServiceNamespace": "dynamodb"
-        //     }
-        // }, 
-        // "ConfigurationTableAutoScalingReadPolicy": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalingPolicy", 
-        //     "Properties": {
-        //         "PolicyName": {
-        //             "Fn::Join": [
-        //                 "-", 
-        //                 [
-        //                     {
-        //                         "Ref": "AWS::StackName"
-        //                     }, 
-        //                     "ConfigTableAutoScalingReadPolicy"
-        //                 ]
-        //             ]
-        //         }, 
-        //         "PolicyType": "TargetTrackingScaling", 
-        //         "ScalingTargetId": {
-        //             "Ref": "ConfigTableAutoScalingReadTarget"
-        //         }, 
-        //         "TargetTrackingScalingPolicyConfiguration": {
-        //             "TargetValue": 75.0, 
-        //             "ScaleInCooldown": 60, 
-        //             "ScaleOutCooldown": 60, 
-        //             "PredefinedMetricSpecification": {
-        //                 "PredefinedMetricType": "DynamoDBReadCapacityUtilization"
-        //             }
-        //         }
-        //     }, 
-        //     "DependsOn": "StateTableAutoScalingWritePolicy"
-        // }, 
-        // "ConfigTableAutoScalingWriteTarget": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalableTarget", 
-        //     "Properties": {
-        //         "MaxCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "ConfigTableMaxWrite"
-        //             ]
-        //         }, 
-        //         "MinCapacity": {
-        //             "Fn::FindInMap": [
-        //                 "Settings", 
-        //                 "DynamoDbTableCapacities", 
-        //                 "ConfigTableMinWrite"
-        //             ]
-        //         }, 
-        //         "ResourceId": {
-        //             "Fn::Join": [
-        //                 "/", 
-        //                 [
-        //                     "table", 
-        //                     {
-        //                         "Ref": "ConfigTable"
-        //                     }
-        //                 ]
-        //             ]
-        //         }, 
-        //         "RoleARN": {
-        //             "Fn::GetAtt": [
-        //                 "SchedulerDynamoDBScalingRole", 
-        //                 "Arn"
-        //             ]
-        //         }, 
-        //         "ScalableDimension": "dynamodb:table:WriteCapacityUnits", 
-        //         "ServiceNamespace": "dynamodb"
-        //     }
-        // }, 
-        // "ConfigTableAutoScalingWritePolicy": {
-        //     "Type": "AWS::ApplicationAutoScaling::ScalingPolicy", 
-        //     "Properties": {
-        //         "PolicyName": {
-        //             "Fn::Join": [
-        //                 "-", 
-        //                 [
-        //                     {
-        //                         "Ref": "AWS::StackName"
-        //                     }, 
-        //                     "ConfigTableAutoScalingWritePolicy"
-        //                 ]
-        //             ]
-        //         }, 
-        //         "PolicyType": "TargetTrackingScaling", 
-        //         "ScalingTargetId": {
-        //             "Ref": "ConfigTableAutoScalingWriteTarget"
-        //         }, 
-        //         "TargetTrackingScalingPolicyConfiguration": {
-        //             "TargetValue": 75.0, 
-        //             "ScaleInCooldown": 60, 
-        //             "ScaleOutCooldown": 60, 
-        //             "PredefinedMetricSpecification": {
-        //                 "PredefinedMetricType": "DynamoDBWriteCapacityUtilization"
-        //             }
-        //         }
-        //     }, 
-        //     "DependsOn": [
-        //         "ConfigurationTableAutoScalingReadPolicy"
-        //     ]
-        // },
-	
         "SchedulerLogGroup": {
             "Type": "AWS::Logs::LogGroup", 
             "Properties": {
@@ -1426,20 +1100,8 @@
                     ]
                 }, 
                 "Code": {
-                    // "S3Bucket": {
-                    //     "Fn::Join": [
-                    //         "-", 
-                    //         [
-                    //             "solutions", 
-                    //             {
-                    //                 "Ref": "AWS::Region"
-                    //             }
-                    //         ]
-                    //     ]
-                    // }, 
-                    // "S3Key": "aws-instance-scheduler/latest/instance-scheduler-2.2.2.0.zip"		    
-		    "S3Bucket": "scheduler" 
-                    "S3Key":   "instance-scheduler-2.2.2.0.zip"
+		                "S3Bucket": "scheduler", 
+                        "S3Key":   "instance-scheduler-2.10.0.25.zip"
                 }, 
                 "Handler": "main.lambda_handler", 
                 "Runtime": "python2.7", 
@@ -1720,4 +1382,3 @@
         }
     }
 }
-

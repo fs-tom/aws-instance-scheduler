@@ -88,7 +88,11 @@ class InstanceScheduler:
         self._context = None
 
         # valid regions for service
-        self._valid_regions = boto3.Session().get_available_regions(service.service_name)
+#modified for gov-cloud per 
+#https://github.com/awslabs/aws-instance-scheduler/issues/11
+        self._valid_regions = "us-gov-west-1"
+
+#boto3.Session().get_available_regions(service.service_name)
 
         self._usage_metrics = {"Started": {}, "Stopped": {}, "Resized": {}}
 
